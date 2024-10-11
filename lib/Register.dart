@@ -1,5 +1,6 @@
 import 'dart:ui';
 
+import 'package:farmace_app/login.dart';
 import 'package:flutter/material.dart';
 
 class Register extends StatefulWidget {
@@ -12,9 +13,9 @@ class Register extends StatefulWidget {
 class _RegisterState extends State<Register> with TickerProviderStateMixin {
   TabController? tabController;
   List<Color> backAvailableColors = [
-    Color.fromARGB(125, 255, 0, 0),
-    Color.fromARGB(145, 0, 251, 255),
-    Color.fromARGB(125, 10, 208, 135)
+    const Color.fromARGB(145, 0, 195, 199),
+    const Color.fromARGB(145, 1, 135, 218),
+    const Color.fromARGB(125, 10, 208, 135)
   ];
   Color? background_color;
   @override
@@ -26,6 +27,13 @@ class _RegisterState extends State<Register> with TickerProviderStateMixin {
       setState(() {
         background_color = backAvailableColors[tabController!.index];
       });
+      //close keyboard ios
+      FocusScopeNode currentFocus = FocusScope.of(context);
+      if (!currentFocus.hasPrimaryFocus) {
+        currentFocus.unfocus();
+      }
+
+      //close keyboard android
     });
   }
 
@@ -36,7 +44,6 @@ class _RegisterState extends State<Register> with TickerProviderStateMixin {
       extendBodyBehindAppBar: true,
       appBar: AppBar(
         backgroundColor: Colors.transparent,
-        elevation: 0,
         toolbarHeight: 90,
         title: const Text("Farmace",
             style: TextStyle(
@@ -71,7 +78,7 @@ class _RegisterState extends State<Register> with TickerProviderStateMixin {
               ),
               child: TabBarView(
                   controller: tabController,
-                  physics: NeverScrollableScrollPhysics(),
+                  physics: const NeverScrollableScrollPhysics(),
                   children: [
                     Padding(
                       padding: const EdgeInsets.all(10.0),
@@ -137,7 +144,7 @@ class _RegisterState extends State<Register> with TickerProviderStateMixin {
                                   foregroundColor:
                                       WidgetStatePropertyAll(Colors.white),
                                 ),
-                                child: Text("Next"))
+                                child: const Text("Next"))
                           ]),
                     ),
                     Padding(
@@ -191,6 +198,9 @@ class _RegisterState extends State<Register> with TickerProviderStateMixin {
                                     ))),
                             Row(
                                 mainAxisAlignment: MainAxisAlignment.center,
+                                crossAxisAlignment: CrossAxisAlignment.center,
+                                spacing: 0,
+                                mainAxisSize: MainAxisSize.max,
                                 children: [
                                   TextButton(
                                       onPressed: () {
@@ -199,11 +209,11 @@ class _RegisterState extends State<Register> with TickerProviderStateMixin {
                                       },
                                       style: const ButtonStyle(
                                         minimumSize: WidgetStatePropertyAll(
-                                            Size(200, 50)),
+                                            Size(150, 50)),
                                         foregroundColor: WidgetStatePropertyAll(
                                             Colors.white),
                                       ),
-                                      child: Text("Back")),
+                                      child: const Text("Back")),
                                   TextButton(
                                       onPressed: () {
                                         tabController!.animateTo(
@@ -211,18 +221,67 @@ class _RegisterState extends State<Register> with TickerProviderStateMixin {
                                       },
                                       style: const ButtonStyle(
                                         minimumSize: WidgetStatePropertyAll(
-                                            Size(200, 50)),
+                                            Size(150, 50)),
                                         foregroundColor: WidgetStatePropertyAll(
                                             Colors.white),
                                       ),
-                                      child: Text("Next"))
+                                      child: const Text("Next"))
                                 ])
                           ]),
                     ),
                     Container(
-                      child: TextButton(
-                        onPressed: () {},
-                        child: Text("Complete Registration"),
+                      constraints: const BoxConstraints.expand(),
+                      child: ListView(
+                        shrinkWrap: true,
+                        clipBehavior: Clip.hardEdge,
+                        children: [
+                          TextButton(
+                              onPressed: () {
+                                tabController!.animateTo(0);
+                              },
+                              child: const Text("back")),
+                          Center(
+                            child: RichText(
+                                text: const TextSpan(
+                              text: "Privacy and Terms of Use",
+                              style: TextStyle(
+                                  color: Colors.white,
+                                  fontSize: 15,
+                                  fontWeight: FontWeight.bold),
+                            )),
+                          ),
+                          RichText(
+                              text: const TextSpan(
+                                  text:
+                                      "By continuing, you accept our Terms of Use and Privacy Policy.",
+                                  style: TextStyle(
+                                      color: Colors.white,
+                                      fontSize: 15,
+                                      fontWeight: FontWeight.bold))),
+                          const Padding(padding: EdgeInsets.all(10.0)),
+                          Center(
+                            child: TextButton(
+                                onPressed: () {
+                                  Navigator.pushReplacement(
+                                    context,
+                                    MaterialPageRoute(
+                                        builder: (context) => const Login()),
+                                  );
+                                },
+                                style: const ButtonStyle(
+                                  minimumSize:
+                                      WidgetStatePropertyAll(Size(200, 20)),
+                                  foregroundColor:
+                                      WidgetStatePropertyAll(Colors.white),
+                                  backgroundColor: WidgetStatePropertyAll(
+                                      Color.fromARGB(255, 244, 68, 68)),
+                                ),
+                                child: const Text(
+                                  "Register",
+                                  style: TextStyle(fontSize: 20),
+                                )),
+                          ),
+                        ],
                       ),
                     ),
                   ])),

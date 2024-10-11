@@ -1,4 +1,4 @@
-import 'package:farmace_app/Register.dart';
+import 'package:farmace_app/login.dart';
 import 'package:flutter/material.dart';
 
 void main() {
@@ -16,7 +16,7 @@ class MyApp extends StatelessWidget {
         colorScheme: ColorScheme.fromSeed(seedColor: Colors.deepPurple),
         useMaterial3: true,
       ),
-      home: const Register(),
+      home: const Login(),
     );
   }
 }
