@@ -1,7 +1,10 @@
+// ignore_for_file: file_names, non_constant_identifier_names
+
 import 'dart:ui';
 
-import 'package:farmace_app/login.dart';
 import 'package:flutter/material.dart';
+
+import 'package:farmace_app/login.dart';
 
 class Register extends StatefulWidget {
   const Register({super.key});

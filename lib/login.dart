@@ -86,6 +86,7 @@ class _LoginState extends State<Login> {
                                 child: const Text("Register",
                                     style: TextStyle(fontSize: 15))),
                             TextButton(
+                                // ignore: avoid_print
                                 onPressed: () => print("Forgot Password"),
                                 style: const ButtonStyle(
                                   minimumSize:
