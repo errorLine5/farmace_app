@@ -1,9 +1,12 @@
+import 'package:blurrycontainer/blurrycontainer.dart';
+import 'package:farmace_app/homepageComponents/pharmacy_list_element.dart';
 import 'package:farmace_app/homepageComponents/pharmacy_tile.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/rendering.dart';
 
 class Homepage extends StatefulWidget {
-  const Homepage({super.key});
+  void Function() toggleTheme = () {};
+  Homepage({required this.toggleTheme, super.key});
 
   @override
   State<Homepage> createState() => _HomepageState();
@@ -18,44 +21,76 @@ class _HomepageState extends State<Homepage> {
       initialScrollOffset: 200,
       onAttach: (position) {
         position.addListener(() {
-          if (position.userScrollDirection == ScrollDirection.forward) {
-            if (position.pixels > 100 && position.pixels > 300) {
-              position.animateTo(0,
-                  duration: const Duration(milliseconds: 100),
-                  curve: Curves.easeInOut);
-            }
-          } else if (position.userScrollDirection == ScrollDirection.reverse) {
-            if (position.pixels < 100 && position.pixels < 300) {
-              position.animateTo(280,
-                  duration: const Duration(milliseconds: 100),
+          // ignore: avoid_print
+          print("${position.pixels} ${position.maxScrollExtent}");
+
+          if (position.userScrollDirection == ScrollDirection.reverse) {
+            print("reverse");
+            if (position.pixels > 100 && position.pixels < 300) {
+              position.animateTo(300,
+                  duration: const Duration(milliseconds: 50),
                   curve: Curves.easeInOut);
             }
           }
-          // if (position.pixels < 100 &&
-          //     position.userScrollDirection == ScrollDirection.idle) {
-          //   position.animateTo(300,
-          //       duration: const Duration(milliseconds: 100),
-          //       curve: Curves.easeInOut);
-          // }
+          if (position.userScrollDirection == ScrollDirection.forward) {
+            print("forward");
+            if (position.pixels > 300 && position.pixels < 600) {
+              position.animateTo(300,
+                  duration: const Duration(milliseconds: 50),
+                  curve: Curves.easeInOut);
+            }
+            if (position.pixels < 200 && position.pixels > 0) {
+              position.animateTo(0,
+                  duration: const Duration(milliseconds: 50),
+                  curve: Curves.easeInOut);
+            }
+          }
         });
-        position.animateTo(280,
-            duration: const Duration(milliseconds: 300),
-            curve: Curves.easeInOut);
+        position.animateTo(300,
+            duration: const Duration(milliseconds: 1), curve: Curves.easeInOut);
       },
     );
     width = MediaQuery.of(context).size.width;
     return Scaffold(
+      extendBody: true,
+      bottomNavigationBar: BlurryContainer(
+          borderRadius: BorderRadius.circular(0),
+          color: Theme.of(context).appBarTheme.backgroundColor!.withAlpha(204),
+          blur: 10,
+          height: 70,
+          width: 250,
+          child: const Flex(direction: Axis.horizontal, children: [
+            Spacer(),
+            Icon(
+              Icons.home,
+              color: Colors.white,
+            ),
+            Spacer(
+              flex: 2,
+            ),
+            Icon(
+              Icons.search,
+              color: Colors.white,
+            ),
+            Spacer(flex: 2),
+            Icon(
+              Icons.person,
+              color: Colors.white,
+            ),
+            Spacer(),
+          ])),
       body: CustomScrollView(
           controller: scrollController,
           shrinkWrap: true,
           slivers: [
             SliverAppBar(
               expandedHeight: 350,
+              backgroundColor: Theme.of(context).appBarTheme.backgroundColor,
 
               pinned: true,
-              surfaceTintColor: Colors.white,
-              backgroundColor: Colors.white,
               collapsedHeight: 70,
+
+              elevation: 1,
               //put in the flexible space user info
               flexibleSpace: FlexibleSpaceBar(
                 collapseMode: CollapseMode.parallax,
@@ -89,7 +124,6 @@ class _HomepageState extends State<Homepage> {
                         Text(
                           "User Name",
                           style: TextStyle(
-                            color: Color.fromARGB(210, 0, 0, 0),
                             fontSize: 30,
                             fontWeight: FontWeight.w800,
                             fontStyle: FontStyle.normal,
@@ -107,7 +141,6 @@ class _HomepageState extends State<Homepage> {
                         Text(
                           "placeholdermail.@gmail.com",
                           style: TextStyle(
-                            color: Color.fromARGB(210, 0, 0, 0),
                             fontSize: 20,
                             fontWeight: FontWeight.w900,
                             fontStyle: FontStyle.normal,
@@ -124,15 +157,15 @@ class _HomepageState extends State<Homepage> {
                   ],
                 ),
               ),
-              title: const Flex(
+
+              title: Flex(
                   direction: Axis.horizontal,
                   mainAxisAlignment: MainAxisAlignment.spaceEvenly,
                   children: [
-                    Expanded(
+                    const Expanded(
                         flex: 8,
                         child: Text("Farmace",
                             style: TextStyle(
-                              color: Color.fromARGB(210, 0, 0, 0),
                               fontSize: 40,
                               fontWeight: FontWeight.w900,
                               fontStyle: FontStyle.normal,
@@ -142,39 +175,71 @@ class _HomepageState extends State<Homepage> {
                       flex: 1,
                       child: Padding(
                         padding: EdgeInsets.only(right: 20.0),
-                        child: Icon(
-                          Icons.account_circle,
-                          size: 40,
+                        child: IconButton(
+                          onPressed: () {
+                            widget.toggleTheme();
+                          },
+                          icon: Icon(
+                            Theme.of(context).brightness == Brightness.dark
+                                ? Icons.nightlight_round
+                                : Icons.wb_sunny, // Icon for dark theme
+                          ),
                         ),
                       ),
                     )
                   ]),
             ),
+            const SliverToBoxAdapter(
+              child: Padding(
+                padding: EdgeInsets.only(left: 14, top: 20, right: 14),
+                child: Text(
+                  "Open now",
+                  style: TextStyle(
+                    fontSize: 30,
+                    fontWeight: FontWeight.w800,
+                    fontStyle: FontStyle.normal,
+                    fontFamily: "OpenSans",
+                  ),
+                  textAlign: TextAlign.left,
+                ),
+              ),
+            ),
             SliverList(
                 delegate: SliverChildListDelegate([
               Container(
-                color: Colors.white,
                 height: 200,
                 child: ListView(
                   scrollDirection: Axis.horizontal,
-                  children: [
-                    PharmacyTile(width: width),
-                    const PharmacyTile(),
-                    const PharmacyTile(),
-                    const PharmacyTile(),
-                    const PharmacyTile(),
+                  children: const [
+                    PharmacyTile(width: 380),
+                    PharmacyTile(),
+                    PharmacyTile(),
+                    PharmacyTile(),
+                    PharmacyTile(),
                   ],
                 ),
               ),
-              Container(
-                color: Colors.blue,
-                height: 1000,
+            ])),
+            const SliverToBoxAdapter(
+              child: Padding(
+                padding: EdgeInsets.all(10.0),
+                child: Text(
+                  "Next to you",
+                  style: TextStyle(
+                    fontSize: 30,
+                    fontWeight: FontWeight.w800,
+                    fontStyle: FontStyle.normal,
+                    fontFamily: "OpenSans",
+                  ),
+                  textAlign: TextAlign.left,
+                ),
               ),
-              Container(
-                color: Colors.red,
-                height: 1000,
+            ),
+            SliverList(
+              delegate: SliverChildListDelegate(
+                [for (int i = 0; i < 20; i++) const PharmacyListElement()],
               ),
-            ]))
+            ),
           ]),
     );
   }

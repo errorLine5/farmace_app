@@ -7,7 +7,8 @@ import 'package:flutter/material.dart';
 import 'package:farmace_app/login.dart';
 
 class Register extends StatefulWidget {
-  const Register({super.key});
+  final void Function() toggleTheme;
+  const Register({required this.toggleTheme, super.key});
 
   @override
   State<Register> createState() => _RegisterState();
@@ -268,7 +269,8 @@ class _RegisterState extends State<Register> with TickerProviderStateMixin {
                                   Navigator.pushReplacement(
                                     context,
                                     MaterialPageRoute(
-                                        builder: (context) => const Login()),
+                                        builder: (context) => Login(
+                                            toggleTheme: widget.toggleTheme)),
                                   );
                                 },
                                 style: const ButtonStyle(

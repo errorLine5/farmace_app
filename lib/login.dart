@@ -5,7 +5,9 @@ import 'package:farmace_app/homepage.dart';
 import 'package:flutter/material.dart';
 
 class Login extends StatefulWidget {
-  const Login({super.key});
+  void Function() toggleTheme = () {};
+
+  Login({required this.toggleTheme, super.key});
 
   @override
   State<Login> createState() => _LoginState();
@@ -73,8 +75,9 @@ class _LoginState extends State<Login> {
                                       Navigator.pushReplacement(
                                         context,
                                         MaterialPageRoute(
-                                            builder: (context) =>
-                                                const Register()),
+                                            builder: (context) => Register(
+                                                toggleTheme:
+                                                    widget.toggleTheme)),
                                       )
                                     },
                                 style: const ButtonStyle(
@@ -104,7 +107,8 @@ class _LoginState extends State<Login> {
                                 Navigator.pushReplacement(
                                   context,
                                   MaterialPageRoute(
-                                      builder: (context) => const Homepage()),
+                                      builder: (context) => Homepage(
+                                          toggleTheme: widget.toggleTheme)),
                                 )
                               },
                           style: const ButtonStyle(
