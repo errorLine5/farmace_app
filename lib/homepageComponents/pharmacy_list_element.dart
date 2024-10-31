@@ -1,16 +1,30 @@
+// ignore_for_file: avoid_print, prefer_const_constructors
+
 import 'package:flutter/material.dart';
 import 'package:farmace_app/pharmacy_page.dart';
 
+List<String> days = [
+  "lunedì",
+  "martedì",
+  "mercoledì",
+  "giovedì",
+  "venerdì",
+  "sabato",
+  "domenica"
+];
+
 class PharmacyListElement extends StatelessWidget {
-  const PharmacyListElement({super.key});
+  final Map<String, dynamic> data;
+  const PharmacyListElement({super.key, required this.data});
 
   @override
   Widget build(BuildContext context) {
-    return TapRegion(
-      onTapInside: (event) {
+    print(data);
+    return GestureDetector(
+      onTap: () {
         Navigator.of(context).push(
           MaterialPageRoute(
-            builder: (context) => const PharmacyPage(),
+            builder: (context) => PharmacyPage(data: data),
           ),
         );
       },
@@ -54,14 +68,14 @@ class PharmacyListElement extends StatelessWidget {
                       children: [
                         Text(
                           textAlign: TextAlign.left,
-                          "Farmacia Bolli",
+                          data["nome_farmacia"],
                           style: TextStyle(
                             fontSize: 20,
                             fontWeight: FontWeight.w800,
                           ),
                         ),
                         Text(
-                          "Via Corso Vittorio Emanuele II",
+                          data["indirizzo"],
                           textAlign: TextAlign.left,
                           style: TextStyle(
                             fontSize: 15,
@@ -69,7 +83,7 @@ class PharmacyListElement extends StatelessWidget {
                           ),
                         ),
                         Text(
-                          "Aperto fino alle 23pm",
+                          "",
                           textAlign: TextAlign.left,
                           style: TextStyle(
                             fontSize: 15,

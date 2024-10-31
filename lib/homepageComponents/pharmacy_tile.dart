@@ -3,18 +3,18 @@ import 'package:flutter/material.dart';
 
 class PharmacyTile extends StatelessWidget {
   final double width;
-  const PharmacyTile({super.key, this.width = 380});
+  final Map<String, dynamic> data;
+  const PharmacyTile({super.key, this.width = 380, required this.data});
 
   @override
   Widget build(BuildContext context) {
     return Padding(
       padding: const EdgeInsets.all(8.0),
       child: Container(
-        height: 200,
         decoration: BoxDecoration(
           borderRadius: BorderRadius.circular(20),
         ),
-        width: width - 16,
+        width: width - 40,
         child: Stack(
           children: [
             Container(
@@ -35,8 +35,8 @@ class PharmacyTile extends StatelessWidget {
                   ],
                 ),
               ),
-              child: const Padding(
-                padding: EdgeInsets.all(10.0),
+              child: Padding(
+                padding: const EdgeInsets.all(10.0),
                 child: Column(
                   //pharmacy informations here
                   children: [
@@ -46,8 +46,8 @@ class PharmacyTile extends StatelessWidget {
                         children: [
                           Expanded(
                             child: Text(
-                              "Farmacia Bolli",
-                              style: TextStyle(
+                              data["nome_farmacia"],
+                              style: const TextStyle(
                                   color: Colors.white,
                                   fontSize: 25,
                                   fontFamily: "",
@@ -58,8 +58,8 @@ class PharmacyTile extends StatelessWidget {
                     Flex(direction: Axis.horizontal, children: [
                       Expanded(
                         flex: 2,
-                        child: Text("Via Corso Vittorio Emanuele II",
-                            style: TextStyle(
+                        child: Text(data["indirizzo"],
+                            style: const TextStyle(
                               color: Color.fromARGB(255, 255, 255, 255),
                               fontSize: 15,
                               fontWeight: FontWeight.w900,
@@ -68,10 +68,10 @@ class PharmacyTile extends StatelessWidget {
                             textAlign: TextAlign.left),
                       ),
                     ]),
-                    Spacer(
+                    const Spacer(
                       flex: 1,
                     ),
-                    Expanded(
+                    const Expanded(
                         child: Flex(direction: Axis.horizontal, children: [
                       Spacer(
                         flex: 2,

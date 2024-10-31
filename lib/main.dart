@@ -19,6 +19,7 @@ class _MyAppState extends State<MyApp> {
   //get token and email from storage
   String token = '';
   String email = '';
+  bool isDarkMode = false;
 
   @override
   void initState() {
@@ -30,13 +31,20 @@ class _MyAppState extends State<MyApp> {
         email = prefs.getString('email') ?? '';
       });
     });
+    SharedPreferences.getInstance().then((value) {
+      setState(() {
+        isDarkMode = value.getBool('isDarkMode') ?? false;
+      });
+    });
   }
-
-  bool isDarkMode = true;
 
   void toggleTheme() {
     setState(() {
       isDarkMode = !isDarkMode;
+      // Save the user's choice in shared preferences
+      SharedPreferences.getInstance().then((prefs) {
+        prefs.setBool('isDarkMode', isDarkMode);
+      });
     });
   }
 
@@ -211,8 +219,6 @@ class _MyAppState extends State<MyApp> {
 // If you do not have a themeMode switch, uncomment this line
 // to let the device system mode control the theme mode:
 // themeMode: ThemeMode.system,
-
-      title: 'Flutter Demo',
 
       home: token == ''
           ? Login(toggleTheme: toggleTheme)
