@@ -31,13 +31,13 @@ class _HomepageState extends State<Homepage> {
     super.initState();
     SharedPreferences.getInstance().then((value) {
       setState(() {
-        CarouselData = getOpenPharmacies(1, 1, 1000);
+        CarouselData = getPharmacies(30, 160, 10000);
         CarouselData.then((value) {
           print(value);
           print(value.length);
         });
 
-        ListNearbyData = getOpenPharmacies(1, 1, 1000);
+        ListNearbyData = getPharmacies(30, 160, 10000);
         ListNearbyData.then((value) {
           print(value);
           print(value.length);
@@ -97,16 +97,14 @@ class _HomepageState extends State<Homepage> {
           height: 70,
           width: 250,
           child: Flex(direction: Axis.horizontal, children: [
-            const Spacer(),
-            const Icon(
-              Icons.filter_alt,
-            ),
             const Spacer(
-              flex: 2,
+              flex: 1,
             ),
-            const Icon(
-              Icons.search,
-            ),
+            const IconButton(
+                onPressed: null,
+                icon: Icon(
+                  Icons.search,
+                )),
             const Spacer(flex: 2),
             const Icon(
               Icons.person,
@@ -123,7 +121,9 @@ class _HomepageState extends State<Homepage> {
                 Icons.logout,
               ),
             ),
-            const Spacer(),
+            const Spacer(
+              flex: 1,
+            ),
           ])),
       body: RefreshIndicator(
         color: Theme.of(context).textTheme.titleLarge?.color,

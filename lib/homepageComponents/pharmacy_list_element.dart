@@ -2,6 +2,7 @@
 
 import 'package:flutter/material.dart';
 import 'package:farmace_app/pharmacy_page.dart';
+import 'package:farmace_app/components/custom_network_image.dart';
 
 List<String> days = [
   "lunedì",
@@ -29,7 +30,8 @@ class PharmacyListElement extends StatelessWidget {
         );
       },
       child: Container(
-          height: 100,
+          height: 130,
+          clipBehavior: Clip.antiAlias,
           margin: const EdgeInsets.symmetric(vertical: 3, horizontal: 8),
           width: double.infinity,
           decoration: BoxDecoration(
@@ -38,61 +40,65 @@ class PharmacyListElement extends StatelessWidget {
                 ? const Color.fromARGB(255, 39, 43, 39)
                 : const Color.fromARGB(255, 223, 233, 226),
           ),
-          child: Flex(direction: Axis.horizontal, children: [
-            const Expanded(
-              flex: 1,
-              child: Padding(
-                padding: EdgeInsets.all(4.0),
-                child: ClipRRect(
-                  clipBehavior: Clip.antiAlias,
-                  borderRadius: BorderRadius.all(Radius.circular(15)),
-                  child: Image(
-                    fit: BoxFit.fill,
-                    alignment: Alignment.center,
-                    image: NetworkImage(
-                      "https://picsum.photos/900/900",
+          child: Padding(
+            padding: const EdgeInsets.all(8.0),
+            child: Flex(direction: Axis.horizontal, children: [
+              Expanded(
+                flex: 1,
+                child: Padding(
+                  padding: EdgeInsets.all(4.0),
+                  child: ClipRRect(
+                    clipBehavior: Clip.antiAlias,
+                    borderRadius: BorderRadius.all(Radius.circular(15)),
+                    child: CustomNetworkImage(
+                      imageUrl: data["image"],
+                      fit: BoxFit.fill,
+                      alignment: Alignment.center,
                     ),
                   ),
                 ),
               ),
-            ),
-            Expanded(
-                flex: 3,
-                child: Container(
-                  padding: const EdgeInsets.all(8.0),
-                  width: double.infinity,
-                  alignment: Alignment.centerLeft,
-                  child: Column(
-                      mainAxisSize: MainAxisSize.max,
-                      crossAxisAlignment: CrossAxisAlignment.start,
-                      children: [
-                        Text(
-                          textAlign: TextAlign.left,
-                          data["nome_farmacia"],
-                          style: TextStyle(
-                            fontSize: 20,
-                            fontWeight: FontWeight.w800,
+              Expanded(
+                  flex: 3,
+                  child: Container(
+                    padding: const EdgeInsets.all(8.0),
+                    width: double.infinity,
+                    alignment: Alignment.centerLeft,
+                    child: Column(
+                        mainAxisSize: MainAxisSize.max,
+                        crossAxisAlignment: CrossAxisAlignment.start,
+                        children: [
+                          Text(
+                            overflow: TextOverflow.ellipsis,
+                            textAlign: TextAlign.left,
+                            data["nome_farmacia"],
+                            style: TextStyle(
+                              fontSize: 20,
+                              fontWeight: FontWeight.w800,
+                            ),
                           ),
-                        ),
-                        Text(
-                          data["indirizzo"],
-                          textAlign: TextAlign.left,
-                          style: TextStyle(
-                            fontSize: 15,
-                            fontWeight: FontWeight.w800,
+                          Text(
+                            overflow: TextOverflow.ellipsis,
+                            maxLines: 2,
+                            data["indirizzo"],
+                            textAlign: TextAlign.left,
+                            style: TextStyle(
+                              fontSize: 15,
+                              fontWeight: FontWeight.w800,
+                            ),
                           ),
-                        ),
-                        Text(
-                          "",
-                          textAlign: TextAlign.left,
-                          style: TextStyle(
-                            fontSize: 15,
-                            fontWeight: FontWeight.w800,
+                          Text(
+                            "",
+                            textAlign: TextAlign.left,
+                            style: TextStyle(
+                              fontSize: 15,
+                              fontWeight: FontWeight.w800,
+                            ),
                           ),
-                        ),
-                      ]),
-                )),
-          ])),
+                        ]),
+                  )),
+            ]),
+          )),
     );
   }
 }

@@ -6,6 +6,7 @@ import 'dart:ui';
 import 'package:farmace_app/Register.dart';
 import 'package:farmace_app/conndata.dart';
 import 'package:farmace_app/homepage.dart';
+import 'package:farmace_app/lost_password.dart';
 import 'package:flutter/material.dart';
 import 'package:http/http.dart' as http;
 import 'package:shared_preferences/shared_preferences.dart';
@@ -20,6 +21,7 @@ class Login extends StatefulWidget {
 
 class _LoginState extends State<Login> {
   late SharedPreferences prefs;
+  final _formKey = GlobalKey<FormState>();
 
   @override
   void initState() {
@@ -64,7 +66,7 @@ class _LoginState extends State<Login> {
             height: double.infinity,
             child: Image.network(
               "https://picsum.photos/800/900",
-              fit: BoxFit.fill,
+              fit: BoxFit.cover,
               alignment: Alignment.center,
             ),
           ),
@@ -72,159 +74,195 @@ class _LoginState extends State<Login> {
             filter: ImageFilter.blur(
               sigmaX: 8,
               sigmaY: 8,
-              tileMode: TileMode.clamp,
             ),
-            child: Center(
-              child: Padding(
-                padding: const EdgeInsets.all(8.0),
-                child: Container(
-                  color: Colors.transparent,
-                  height: double.infinity,
-                  width: 400,
-                  padding: const EdgeInsets.only(bottom: 25.0),
-                  child: Column(
-                    mainAxisSize: MainAxisSize.min,
-                    verticalDirection: VerticalDirection.up,
-                    spacing: 10,
-                    children: [
-                      Row(
+            child: Container(
+              decoration: BoxDecoration(
+                color: Colors.black.withOpacity(0.3),
+              ),
+              child: Center(
+                child: SingleChildScrollView(
+                  child: Padding(
+                    padding: const EdgeInsets.symmetric(horizontal: 24.0),
+                    child: Container(
+                      constraints: const BoxConstraints(maxWidth: 400),
+                      child: Form(
+                        key: _formKey,
+                        child: Column(
                           mainAxisAlignment: MainAxisAlignment.center,
-                          spacing: 0,
                           children: [
-                            TextButton(
-                                onPressed: () => {
-                                      Navigator.pushReplacement(
-                                        context,
-                                        MaterialPageRoute(
-                                            builder: (context) => Register(
-                                                toggleTheme:
-                                                    widget.toggleTheme)),
-                                      )
-                                    },
-                                style: const ButtonStyle(
-                                  minimumSize:
-                                      WidgetStatePropertyAll(Size(150, 50)),
-                                  foregroundColor:
-                                      WidgetStatePropertyAll(Colors.white),
+                            const SizedBox(height: 100),
+                            TextFormField(
+                              onChanged: (value) => email = value,
+                              validator: (value) =>
+                                  value!.isEmpty ? 'Email is required' : null,
+                              style: const TextStyle(color: Colors.white),
+                              decoration: InputDecoration(
+                                filled: true,
+                                fillColor: Colors.white.withOpacity(0.1),
+                                border: OutlineInputBorder(
+                                  borderRadius: BorderRadius.circular(12),
+                                  borderSide: BorderSide.none,
                                 ),
-                                child: const Text("Register",
-                                    style: TextStyle(fontSize: 15))),
-                            TextButton(
-                                // ignore: avoid_print
-                                onPressed: () => print("Forgot Password"),
-                                style: const ButtonStyle(
-                                  minimumSize:
-                                      WidgetStatePropertyAll(Size(180, 50)),
-                                  foregroundColor:
-                                      WidgetStatePropertyAll(Colors.white),
+                                enabledBorder: OutlineInputBorder(
+                                  borderRadius: BorderRadius.circular(12),
+                                  borderSide: BorderSide(
+                                      color: Colors.white.withOpacity(0.3)),
                                 ),
-                                child: const Text("Forgot Password",
-                                    style: TextStyle(fontSize: 15)))
-                          ]),
-                      const Padding(
-                          padding: EdgeInsets.symmetric(vertical: 15)),
-                      TextButton(
-                          onPressed: () async {
-                            var headers = {'Content-Type': 'application/json'};
+                                focusedBorder: OutlineInputBorder(
+                                  borderRadius: BorderRadius.circular(12),
+                                  borderSide: const BorderSide(
+                                      color: Colors.white, width: 2),
+                                ),
+                                labelText: 'Email',
+                                labelStyle: TextStyle(
+                                    color: Colors.white.withOpacity(0.9)),
+                                prefixIcon: const Icon(Icons.email,
+                                    color: Colors.white),
+                              ),
+                            ),
+                            const SizedBox(height: 16),
+                            TextFormField(
+                              onChanged: (value) => password = value,
+                              obscureText: true,
+                              validator: (value) => value!.isEmpty
+                                  ? 'Password is required'
+                                  : null,
+                              style: const TextStyle(color: Colors.white),
+                              decoration: InputDecoration(
+                                filled: true,
+                                fillColor: Colors.white.withOpacity(0.1),
+                                border: OutlineInputBorder(
+                                  borderRadius: BorderRadius.circular(12),
+                                  borderSide: BorderSide.none,
+                                ),
+                                enabledBorder: OutlineInputBorder(
+                                  borderRadius: BorderRadius.circular(12),
+                                  borderSide: BorderSide(
+                                      color: Colors.white.withOpacity(0.3)),
+                                ),
+                                focusedBorder: OutlineInputBorder(
+                                  borderRadius: BorderRadius.circular(12),
+                                  borderSide: const BorderSide(
+                                      color: Colors.white, width: 2),
+                                ),
+                                labelText: 'Password',
+                                labelStyle: TextStyle(
+                                    color: Colors.white.withOpacity(0.9)),
+                                prefixIcon:
+                                    const Icon(Icons.lock, color: Colors.white),
+                              ),
+                            ),
+                            const SizedBox(height: 24),
+                            SizedBox(
+                              width: double.infinity,
+                              child: ElevatedButton(
+                                onPressed: () async {
+                                  if (_formKey.currentState!.validate()) {
+                                    var headers = {
+                                      'Content-Type': 'application/json'
+                                    };
 
-                            http
-                                .post(
-                                    headers: headers,
-                                    Uri.parse("${Connection().url}/auth/login"),
-                                    body: jsonEncode({
-                                      "email": email,
-                                      "password": password,
-                                      "token": ""
-                                    }))
-                                .then((value) {
-                              if (value.statusCode == 200) {
-                                ScaffoldMessenger.of(context)
-                                    .showSnackBar(const SnackBar(
-                                  content: Text("Login successful"),
-                                ));
-                                prefs.setString(
-                                    'token', jsonDecode(value.body)['token']);
-                                prefs.setString('email', email);
+                                    http
+                                        .post(
+                                            headers: headers,
+                                            Uri.parse(
+                                                "${Connection().url}/auth/login"),
+                                            body: jsonEncode({
+                                              "email": email,
+                                              "password": password,
+                                              "token": ""
+                                            }))
+                                        .then((value) {
+                                      if (value.statusCode == 200) {
+                                        ScaffoldMessenger.of(context)
+                                            .showSnackBar(const SnackBar(
+                                          content: Text("Login successful"),
+                                        ));
+                                        prefs.setString('token',
+                                            jsonDecode(value.body)['token']);
+                                        prefs.setString('email', email);
 
-                                Navigator.pushReplacement(
-                                  context,
-                                  MaterialPageRoute(
-                                      builder: (context) => Homepage(
-                                          toggleTheme: widget.toggleTheme)),
-                                );
+                                        Navigator.pushReplacement(
+                                          context,
+                                          MaterialPageRoute(
+                                              builder: (context) => Homepage(
+                                                  toggleTheme:
+                                                      widget.toggleTheme)),
+                                        );
 
-                                print(value.body);
-                              } else {
-                                //toast error
-                                print(value.body);
+                                        print(value.body);
+                                      } else {
+                                        //toast error
+                                        print(value.body);
 
-                                ScaffoldMessenger.of(context)
-                                    .showSnackBar(const SnackBar(
-                                  content: Text("Incorrect email or password"),
-                                ));
-                              }
-                            });
-                          },
-                          style: const ButtonStyle(
-                            minimumSize: WidgetStatePropertyAll(Size(200, 50)),
-                            backgroundColor:
-                                WidgetStatePropertyAll(Colors.blue),
-                            foregroundColor:
-                                WidgetStatePropertyAll(Colors.white),
-                          ),
-                          child: const Text("Login",
-                              style: TextStyle(fontSize: 15))),
-                      const Padding(
-                          padding: EdgeInsets.symmetric(vertical: 0.5)),
-                      TextFormField(
-                          onChanged: (value) => password = value,
-                          obscureText: true,
-                          validator: (value) =>
-                              value!.isNotEmpty ? null : 'Password is required',
-                          decoration: const InputDecoration(
-                              filled: true,
-                              fillColor: Color.fromARGB(59, 245, 245, 245),
-                              border: OutlineInputBorder(
-                                borderRadius:
-                                    BorderRadius.all(Radius.circular(10.0)),
+                                        ScaffoldMessenger.of(context)
+                                            .showSnackBar(const SnackBar(
+                                          content: Text(
+                                              "Incorrect email or password"),
+                                        ));
+                                      }
+                                    });
+                                  }
+                                },
+                                style: ElevatedButton.styleFrom(
+                                  backgroundColor: Colors.blue,
+                                  foregroundColor: Colors.white,
+                                  padding:
+                                      const EdgeInsets.symmetric(vertical: 16),
+                                  shape: RoundedRectangleBorder(
+                                    borderRadius: BorderRadius.circular(12),
+                                  ),
+                                ),
+                                child: const Text(
+                                  "Login",
+                                  style: TextStyle(
+                                      fontSize: 16,
+                                      fontWeight: FontWeight.bold),
+                                ),
                               ),
-                              focusedBorder: OutlineInputBorder(
-                                borderRadius:
-                                    BorderRadius.all(Radius.circular(10.0)),
-                                borderSide: BorderSide(
-                                    color: Color.fromARGB(255, 255, 255, 255),
-                                    width: 2),
-                              ),
-                              floatingLabelStyle: TextStyle(
-                                color: Color.fromARGB(255, 255, 255, 255),
-                              ),
-                              labelText: 'Password',
-                              prefixIcon: Icon(Icons.key, color: Colors.white),
-                              labelStyle: TextStyle(
-                                color: Color.fromARGB(255, 255, 255, 255),
-                              ))),
-                      TextFormField(
-                          onChanged: (value) => email = value,
-                          decoration: const InputDecoration(
-                              filled: true,
-                              fillColor: Color.fromARGB(59, 245, 245, 245),
-                              labelText: 'Email',
-                              floatingLabelStyle: TextStyle(
-                                color: Color.fromARGB(255, 255, 255, 255),
-                              ),
-                              focusedBorder: OutlineInputBorder(
-                                borderRadius:
-                                    BorderRadius.all(Radius.circular(10.0)),
-                                borderSide: BorderSide(
-                                    color: Color.fromARGB(255, 255, 255, 255),
-                                    width: 2),
-                              ),
-                              prefixIcon:
-                                  Icon(Icons.email, color: Colors.white),
-                              labelStyle: TextStyle(
-                                color: Color.fromARGB(255, 255, 255, 255),
-                              ))),
-                    ],
+                            ),
+                            const SizedBox(height: 16),
+                            Row(
+                              mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                              children: [
+                                TextButton(
+                                  onPressed: () => Navigator.push(
+                                    context,
+                                    MaterialPageRoute(
+                                      builder: (context) => Register(
+                                          toggleTheme: widget.toggleTheme),
+                                    ),
+                                  ),
+                                  child: Text(
+                                    "Register",
+                                    style: TextStyle(
+                                      color: Colors.white.withOpacity(0.9),
+                                      fontSize: 16,
+                                    ),
+                                  ),
+                                ),
+                                TextButton(
+                                  onPressed: () => Navigator.push(
+                                    context,
+                                    MaterialPageRoute(
+                                      builder: (context) => LostPassword(
+                                          toggleTheme: widget.toggleTheme),
+                                    ),
+                                  ),
+                                  child: Text(
+                                    "Forgot Password?",
+                                    style: TextStyle(
+                                      color: Colors.white.withOpacity(0.9),
+                                      fontSize: 16,
+                                    ),
+                                  ),
+                                ),
+                              ],
+                            ),
+                          ],
+                        ),
+                      ),
+                    ),
                   ),
                 ),
               ),

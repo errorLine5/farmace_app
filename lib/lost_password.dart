@@ -9,22 +9,20 @@ import 'package:flutter/material.dart';
 import 'package:http/http.dart' as http;
 
 // ignore: must_be_immutable
-class Register extends StatefulWidget {
+class LostPassword extends StatefulWidget {
   void Function() toggleTheme = () {};
-  Register({required this.toggleTheme, super.key});
+  LostPassword({required this.toggleTheme, super.key});
 
   @override
-  State<Register> createState() => _RegisterState();
+  State<LostPassword> createState() => _LostPasswordState();
 }
 
-class _RegisterState extends State<Register> {
+class _LostPasswordState extends State<LostPassword> {
   final _formKey = GlobalKey<FormState>();
 
   @override
   Widget build(BuildContext context) {
     String email = "";
-    String password = "";
-    String confirmPassword = "";
 
     return Scaffold(
       extendBody: true,
@@ -81,6 +79,24 @@ class _RegisterState extends State<Register> {
                           mainAxisAlignment: MainAxisAlignment.center,
                           children: [
                             const SizedBox(height: 100),
+                            const Text(
+                              "Reset Password",
+                              style: TextStyle(
+                                color: Colors.white,
+                                fontSize: 24,
+                                fontWeight: FontWeight.bold,
+                              ),
+                            ),
+                            const SizedBox(height: 16),
+                            const Text(
+                              "Enter your email address and we'll send you instructions to reset your password.",
+                              style: TextStyle(
+                                color: Colors.white,
+                                fontSize: 16,
+                              ),
+                              textAlign: TextAlign.center,
+                            ),
+                            const SizedBox(height: 24),
                             TextFormField(
                               onChanged: (value) => email = value,
                               validator: (value) {
@@ -118,82 +134,6 @@ class _RegisterState extends State<Register> {
                                     color: Colors.white),
                               ),
                             ),
-                            const SizedBox(height: 16),
-                            TextFormField(
-                              onChanged: (value) => password = value,
-                              obscureText: true,
-                              validator: (value) {
-                                if (value!.isEmpty) {
-                                  return 'Password is required';
-                                }
-                                if (value.length < 6) {
-                                  return 'Password must be at least 6 characters';
-                                }
-                                return null;
-                              },
-                              style: const TextStyle(color: Colors.white),
-                              decoration: InputDecoration(
-                                filled: true,
-                                fillColor: Colors.white.withOpacity(0.1),
-                                border: OutlineInputBorder(
-                                  borderRadius: BorderRadius.circular(12),
-                                  borderSide: BorderSide.none,
-                                ),
-                                enabledBorder: OutlineInputBorder(
-                                  borderRadius: BorderRadius.circular(12),
-                                  borderSide: BorderSide(
-                                      color: Colors.white.withOpacity(0.3)),
-                                ),
-                                focusedBorder: OutlineInputBorder(
-                                  borderRadius: BorderRadius.circular(12),
-                                  borderSide: const BorderSide(
-                                      color: Colors.white, width: 2),
-                                ),
-                                labelText: 'Password',
-                                labelStyle: TextStyle(
-                                    color: Colors.white.withOpacity(0.9)),
-                                prefixIcon:
-                                    const Icon(Icons.lock, color: Colors.white),
-                              ),
-                            ),
-                            const SizedBox(height: 16),
-                            TextFormField(
-                              onChanged: (value) => confirmPassword = value,
-                              obscureText: true,
-                              validator: (value) {
-                                if (value!.isEmpty) {
-                                  return 'Please confirm your password';
-                                }
-                                if (value != password) {
-                                  return 'Passwords do not match';
-                                }
-                                return null;
-                              },
-                              style: const TextStyle(color: Colors.white),
-                              decoration: InputDecoration(
-                                filled: true,
-                                fillColor: Colors.white.withOpacity(0.1),
-                                border: OutlineInputBorder(
-                                  borderRadius: BorderRadius.circular(12),
-                                  borderSide: BorderSide.none,
-                                ),
-                                enabledBorder: OutlineInputBorder(
-                                  borderRadius: BorderRadius.circular(12),
-                                  borderSide: BorderSide(
-                                      color: Colors.white.withOpacity(0.3)),
-                                ),
-                                focusedBorder: OutlineInputBorder(
-                                  borderRadius: BorderRadius.circular(12),
-                                  borderSide: const BorderSide(
-                                      color: Colors.white, width: 2),
-                                ),
-                                labelText: 'Confirm Password',
-                                labelStyle: TextStyle(
-                                    color: Colors.white.withOpacity(0.9)),
-                                prefixIcon: const Icon(Icons.lock_outline,
-                                    color: Colors.white),
-                              ),
-                            ),
                             const SizedBox(height: 24),
                             SizedBox(
                               width: double.infinity,
@@ -203,31 +143,41 @@ class _RegisterState extends State<Register> {
                                     var headers = {
                                       'Content-Type': 'application/json'
                                     };
-                                    http
-                                        .post(
-                                            headers: headers,
-                                            Uri.parse(
-                                                "${Connection().url}/auth/register"),
-                                            body: jsonEncode({
-                                              "email": email,
-                                              "password": password
-                                            }))
-                                        .then((value) {
-                                      if (value.statusCode == 200) {
+                                    try {
+                                      final response = await http.post(
+                                          Uri.parse(
+                                              "${Connection().url}/auth/reset-password"),
+                                          headers: headers,
+                                          body: jsonEncode({"email": email}));
+
+                                      if (response.statusCode == 200) {
                                         ScaffoldMessenger.of(context)
                                             .showSnackBar(const SnackBar(
-                                          content:
-                                              Text("Registration successful"),
+                                          content: Text(
+                                              "Password reset instructions sent to your email"),
                                         ));
-                                        Navigator.pop(context);
+                                        Navigator.pushReplacement(
+                                          context,
+                                          MaterialPageRoute(
+                                            builder: (context) => Login(
+                                                toggleTheme:
+                                                    widget.toggleTheme),
+                                          ),
+                                        );
                                       } else {
                                         ScaffoldMessenger.of(context)
                                             .showSnackBar(const SnackBar(
                                           content: Text(
-                                              "Registration failed. Please try again."),
+                                              "Failed to send reset instructions. Please try again."),
                                         ));
                                       }
-                                    });
+                                    } catch (e) {
+                                      ScaffoldMessenger.of(context)
+                                          .showSnackBar(const SnackBar(
+                                        content: Text(
+                                            "An error occurred. Please try again later."),
+                                      ));
+                                    }
                                   }
                                 },
                                 style: ElevatedButton.styleFrom(
@@ -240,7 +190,7 @@ class _RegisterState extends State<Register> {
                                   ),
                                 ),
                                 child: const Text(
-                                  "Register",
+                                  "Send Reset Instructions",
                                   style: TextStyle(
                                       fontSize: 16,
                                       fontWeight: FontWeight.bold),
@@ -251,7 +201,7 @@ class _RegisterState extends State<Register> {
                             TextButton(
                               onPressed: () => Navigator.pop(context),
                               child: Text(
-                                "Already have an account? Login",
+                                "Back to Login",
                                 style: TextStyle(
                                   color: Colors.white.withOpacity(0.9),
                                   fontSize: 16,

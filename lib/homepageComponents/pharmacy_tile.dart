@@ -19,10 +19,13 @@ class PharmacyTile extends StatelessWidget {
           children: [
             Container(
               decoration: BoxDecoration(
-                image: const DecorationImage(
-                  image: NetworkImage(
-                    "https://picsum.photos/900/900",
-                  ),
+                image: DecorationImage(
+                  colorFilter: ColorFilter.mode(
+                      Colors.black.withOpacity(0.3), BlendMode.darken),
+                  image: (data['image'] != null)
+                      ? NetworkImage(data['image'])
+                      : const AssetImage(
+                          'packages/flutter_assets/images/default.png'),
                   fit: BoxFit.fill,
                 ),
                 borderRadius: BorderRadius.circular(20),
@@ -47,6 +50,8 @@ class PharmacyTile extends StatelessWidget {
                           Expanded(
                             child: Text(
                               data["nome_farmacia"],
+                              overflow: TextOverflow.ellipsis,
+                              maxLines: 1,
                               style: const TextStyle(
                                   color: Colors.white,
                                   fontSize: 25,
@@ -59,6 +64,8 @@ class PharmacyTile extends StatelessWidget {
                       Expanded(
                         flex: 2,
                         child: Text(data["indirizzo"],
+                            overflow: TextOverflow.ellipsis,
+                            maxLines: 2,
                             style: const TextStyle(
                               color: Color.fromARGB(255, 255, 255, 255),
                               fontSize: 15,
