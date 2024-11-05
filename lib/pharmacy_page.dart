@@ -157,6 +157,8 @@ class _PharmacyPageState extends State<PharmacyPage> {
                           width: width * 0.75,
                           child: Text(
                             textAlign: TextAlign.start,
+                            maxLines: 1,
+                            overflow: TextOverflow.ellipsis,
                             widget.data["nome_farmacia"],
                             style: const TextStyle(
                               color: Colors.white,
@@ -167,7 +169,7 @@ class _PharmacyPageState extends State<PharmacyPage> {
                                     blurRadius: 30)
                               ],
                               fontFamily: "Poppins",
-                              fontSize: 40,
+                              fontSize: 25,
                               fontWeight: FontWeight.bold,
                             ),
                           ),
@@ -186,7 +188,77 @@ class _PharmacyPageState extends State<PharmacyPage> {
                         color: Theme.of(context).primaryColor.withAlpha(180),
                         child: Padding(
                           padding: const EdgeInsets.all(10.0),
-                          child: Text("test"),
+                          child: Column(
+                            crossAxisAlignment: CrossAxisAlignment.start,
+                            children: [
+                              Row(
+                                children: [
+                                  const Icon(
+                                    Icons.location_on,
+                                  ),
+                                  const SizedBox(width: 8),
+                                  Expanded(
+                                    child: Text(
+                                      widget.data["indirizzo"],
+                                      style: const TextStyle(
+                                        fontSize: 16,
+                                        fontWeight: FontWeight.w500,
+                                      ),
+                                    ),
+                                  ),
+                                ],
+                              ),
+                              const SizedBox(height: 12),
+                              Row(
+                                children: [
+                                  const Icon(
+                                    Icons.access_time,
+                                  ),
+                                  const SizedBox(width: 8),
+                                  Text(
+                                    "${widget.data['orari'].toString()} }",
+                                    style: const TextStyle(
+                                      fontSize: 16,
+                                      fontWeight: FontWeight.w500,
+                                    ),
+                                  ),
+                                ],
+                              ),
+                              const SizedBox(height: 12),
+                              Row(
+                                children: [
+                                  const Icon(
+                                    Icons.phone,
+                                  ),
+                                  const SizedBox(width: 8),
+                                  Text(
+                                    widget.data["numeri"],
+                                    style: const TextStyle(
+                                      fontSize: 16,
+                                      fontWeight: FontWeight.w500,
+                                    ),
+                                  ),
+                                ],
+                              ),
+                              const SizedBox(height: 12),
+                              Row(
+                                children: [
+                                  const Icon(
+                                    Icons.language,
+                                  ),
+                                  const SizedBox(width: 8),
+                                  Text(
+                                    widget.data["sito_web"] ??
+                                        "Sito web non disponibile",
+                                    style: const TextStyle(
+                                      fontSize: 16,
+                                      fontWeight: FontWeight.w500,
+                                    ),
+                                  ),
+                                ],
+                              ),
+                            ],
+                          ),
                         )),
                   ],
                 ),

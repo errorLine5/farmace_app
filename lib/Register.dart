@@ -4,7 +4,6 @@ import 'dart:convert';
 import 'dart:ui';
 
 import 'package:farmace_app/conndata.dart';
-import 'package:farmace_app/login.dart';
 import 'package:flutter/material.dart';
 import 'package:http/http.dart' as http;
 

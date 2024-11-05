@@ -20,7 +20,7 @@ class PharmacyListElement extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    print(data);
+    // print(data);
     return GestureDetector(
       onTap: () {
         Navigator.of(context).push(
