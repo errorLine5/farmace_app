@@ -23,7 +23,7 @@ class _RegisterState extends State<Register> {
   Widget build(BuildContext context) {
     String email = "";
     String password = "";
-    String confirmPassword = "";
+    String confirmPassword = ""; //TODO: add ui for password confirmation
 
     return Scaffold(
       extendBody: true,
